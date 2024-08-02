@@ -1,0 +1,40 @@
+/**
+ * A axios global instance, all api request will be goes through this file
+ */
+
+import axios from 'axios';
+import { isTokenExpired } from './isTokenExpiration';
+
+const Api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+Api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      if (isTokenExpired(token)) {
+        localStorage.removeItem('token');
+        return Promise.reject(new Error('Token expired'));
+      }
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+Api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default Api;
