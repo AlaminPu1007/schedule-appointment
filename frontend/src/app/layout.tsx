@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className='scroll-smooth'>
+    <html lang='en' className='scroll-smooth bg-gray-100'>
       <body suppressHydrationWarning={true} className={poppins.className}>
         <HeaderComponent />
         <main>{children}</main>

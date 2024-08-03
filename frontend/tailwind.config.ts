@@ -13,9 +13,20 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
-      colors: {},
+      colors: {
+        'theme-primary': '#0D3C9F',
+        'theme-btn': '#4db5ff',
+      },
       container: {
         center: true,
+        padding: {
+          DEFAULT: '1rem',
+          sm: '1rem',
+          md: '1rem',
+          lg: '0.5rem',
+          xl: '0.5rem',
+          '2xl': '0.5rem',
+        },
         screens: {
           xl: '1235px',
         },

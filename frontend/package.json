@@ -19,6 +19,7 @@
     "url": "https://showcase-alamin.vercel.app/"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
     "axios": "^1.7.3",
     "jwt-decode": "^4.0.0",
     "next": "14.2.5",

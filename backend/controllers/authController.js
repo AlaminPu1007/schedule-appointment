@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const { errorHandler } = require("../utils/errorHandler");
 
 exports.register = async (req, res) => {
-    const { username, password } = req.body;
+    const { name, username, password } = req.body;
 
     try {
         let user = await User.findOne({ username });
@@ -12,7 +12,7 @@ exports.register = async (req, res) => {
             return res.status(400).json({ msg: "User already exists" });
         }
 
-        user = new User({ username, password });
+        user = new User({ name, username, password });
         await user.save();
 
         const payload = {
