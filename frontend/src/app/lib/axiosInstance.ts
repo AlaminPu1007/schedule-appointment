@@ -2,8 +2,15 @@
  * A axios global instance, all api request will be goes through this file
  */
 
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { isTokenExpired } from './isTokenExpiration';
+
+interface ErrorResponse {
+  message: string;
+}
+export interface CustomAxiosError extends AxiosError {
+  response?: AxiosResponse<ErrorResponse>;
+}
 
 const Api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,

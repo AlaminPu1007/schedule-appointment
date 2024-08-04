@@ -1,10 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Link from 'next/link';
+import Api, { CustomAxiosError } from '@/app/lib/axiosInstance';
+import { setItem } from '@/app/lib/localStorage';
+import { handleError } from '@/app/lib/errorHandler';
+import { useRouter } from 'next/navigation';
+import { setCookie } from 'cookies-next';
+import { toast } from 'react-toastify';
 
 interface IFormInput {
   username: string;
@@ -12,17 +18,18 @@ interface IFormInput {
 }
 
 const schema = yup.object().shape({
-  username: yup
-    .string()
-    .email('Invalid username address')
-    .required('Username is required'),
+  username: yup.string().required('Username is required'),
   password: yup
     .string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters'),
 });
 
 const SignInForm: React.FC = () => {
+  const router = useRouter();
+  // define component local memory
+  const [loading, setLoading] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -30,8 +37,31 @@ const SignInForm: React.FC = () => {
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
   });
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    if (loading) return;
+    try {
+      // start loader
+      setLoading(true);
+
+      const res = await Api.post(`/auth/login`, data);
+      const { token = '' } = res.data;
+
+      // set token in local-storage
+      setItem('token', token);
+      // set next cookies header,it help us to interact with middleware
+      setCookie('token', token, { maxAge: 60 * 60 * 24 * 7 }); // Expires in 1 week
+      toast.success('Login successfully');
+      router.push('/');
+    } catch (error) {
+      handleError(error as CustomAxiosError);
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log(error);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,9 +115,9 @@ const SignInForm: React.FC = () => {
           </div>
           <button
             type='submit'
-            className='bg-theme-primary mt-[20px] w-full rounded-md px-4 py-2 text-white transition-all hover:bg-indigo-700'
+            className='mt-[20px] w-full rounded-md bg-theme-primary px-4 py-2 text-white transition-all hover:bg-indigo-700'
           >
-            Sign in
+            {!loading ? 'Sign in' : 'loading...'}
           </button>
         </form>
         <div className='mt-5 text-center text-sm'>
@@ -95,7 +125,7 @@ const SignInForm: React.FC = () => {
             {`Don't have an account?`}{' '}
             <Link
               href={'/auth/signup'}
-              className='text-theme-primary after:bg-theme-primary relative after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:duration-200 after:ease-in hover:after:w-full'
+              className='relative text-theme-primary after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-theme-primary after:duration-200 after:ease-in hover:after:w-full'
             >
               Sign up
             </Link>

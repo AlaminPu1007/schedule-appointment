@@ -1,6 +1,14 @@
-import React from 'react';
+'use client';
 
-const page = () => {
+import { deleteCookie } from 'cookies-next';
+import React, { useEffect } from 'react';
+
+const Page = () => {
+  useEffect(() => {
+    setTimeout(() => {
+      deleteCookie('token');
+    }, 9000);
+  }, []);
   return (
     <>
       <div className='container'>
@@ -14,4 +22,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
