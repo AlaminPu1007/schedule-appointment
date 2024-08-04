@@ -58,6 +58,7 @@ const SignInForm: React.FC = () => {
       handleError(error as CustomAxiosError);
 
       if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
         console.log(error);
       }
     } finally {

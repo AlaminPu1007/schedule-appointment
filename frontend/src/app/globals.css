@@ -32,5 +32,5 @@ body {
 }
 
 .custom-btn {
-  @apply rounded-full border bg-theme-primary px-3 py-2 text-sm text-white duration-300 ease-out hover:bg-[#09286A] md:min-w-[120px];
+  @apply min-w-[120px] rounded-full border bg-theme-primary px-3 py-2 text-sm text-white duration-300 ease-out hover:bg-[#09286A];
 }
