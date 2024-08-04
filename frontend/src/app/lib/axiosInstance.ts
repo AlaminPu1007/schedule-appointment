@@ -4,6 +4,8 @@
 
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { isTokenExpired } from './isTokenExpiration';
+import { getItem, removeItem } from './localStorage';
+import { deleteCookie } from 'cookies-next';
 
 interface ErrorResponse {
   message: string;
@@ -21,10 +23,11 @@ const Api = axios.create({
 
 Api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = getItem('token');
+
     if (token) {
       if (isTokenExpired(token)) {
-        localStorage.removeItem('token');
+        removeItem('token');
         return Promise.reject(new Error('Token expired'));
       }
       config.headers.Authorization = `Bearer ${token}`;
@@ -37,8 +40,14 @@ Api.interceptors.request.use(
 Api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.log(error.response.status);
+
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
+      if (typeof window !== 'undefined') {
+        removeItem('token');
+        deleteCookie('token');
+        window.location.href = '/auth/signin';
+      }
     }
     return Promise.reject(error);
   }

@@ -51,8 +51,9 @@ const SignInForm: React.FC = () => {
       setItem('token', token);
       // set next cookies header,it help us to interact with middleware
       setCookie('token', token, { maxAge: 60 * 60 * 24 * 7 }); // Expires in 1 week
+
       toast.success('Login successfully');
-      router.push('/');
+      router.replace('/');
     } catch (error) {
       handleError(error as CustomAxiosError);
 

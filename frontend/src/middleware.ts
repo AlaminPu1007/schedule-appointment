@@ -15,6 +15,7 @@ export function middleware(request: NextRequest) {
   // Get token from cookies
   const token = request.cookies.get('token');
   const isAuthenticated = Boolean(token && typeof token === 'object');
+  //   console.log(token, 'token');
 
   // Function to check if the current path matches any of the routes
   const matchRoute = (routes: string | string[]) => routes.includes(pathname);
