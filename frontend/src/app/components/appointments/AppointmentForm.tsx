@@ -8,7 +8,7 @@ import { AppointMentIFormInput } from '@/app/types/inputType';
 import Api, { CustomAxiosError } from '@/app/lib/axiosInstance';
 import { toast } from 'react-toastify';
 import { handleError } from '@/app/lib/errorHandler';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const schema = yup.object().shape({
   title: yup.string().required('Title is required'),
@@ -19,7 +19,7 @@ const schema = yup.object().shape({
 
 const AppointmentForm = () => {
   const params = useSearchParams();
-  //   console.log(params.get('user_id'), 'params');
+  const router = useRouter();
 
   // define component local memory
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,6 +44,7 @@ const AppointmentForm = () => {
 
       // set next cookies header,it help us to interact with middleware
       toast.success('Your appointment is created successfully');
+      router.back();
     } catch (error) {
       handleError(error as CustomAxiosError);
 
