@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'rc-pagination/assets/index.css';
 import React from 'react';
 import HeaderComponent from './components/layouts/header/HeaderComponent';
 import FooterComponent from './components/layouts/footer/FooterComponent';

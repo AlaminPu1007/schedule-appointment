@@ -2,40 +2,55 @@
 
 import Api, { CustomAxiosError } from '@/app/lib/axiosInstance';
 import { handleError } from '@/app/lib/errorHandler';
-import { User } from '@/app/types/user';
+import { User, UserResponse } from '@/app/types/user';
 import ResultNotFoundUI from '@/app/utils/ResultNotFoundUI';
 import UserCard from '@/app/utils/UserCard';
 import UserCardSkeleton from '@/app/utils/UserCardSkeleton';
 import React, { useCallback, useEffect, useState } from 'react';
 import HeaderComponent from './HeaderComponent';
 import { debounce } from '@/app/lib/debounced';
+import { searchUser } from '@/app/lib/searchUserByQueryParams';
+import Pagination from 'rc-pagination';
 
 const UserList = () => {
   // define component local state
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userList, setUserList] = useState<User[]>([]);
-  const [data, setData] = useState<[]>([]);
+  const [data, setData] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
   const [searchText, setSearchText] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [limit] = useState<number>(6);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalUsers, setTotalUsers] = useState<number>(0);
 
   useEffect(() => {
     // get user list from server
-    getUserData();
+    getUserData(page, limit);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /**
-   * Get user data from server
+  /*
+   * Fetches user data with pagination.
+   * @param {number} page - The current page number
+   * @param {number} limit - The number of users per page.
+   * @return {Promise<void>}
    */
-  const getUserData = async () => {
+  const getUserData = async (page: number, limit: number) => {
     try {
       setLoading(true);
 
-      const res = await Api.get(`/users`);
+      const res = await Api.get<UserResponse>(
+        `/users?page=${page}&limit=${limit}`
+      );
+
       // this will be treat as a root-data
-      setUserList(res.data || []);
-      setData(res.data || []);
+      setUserList(res.data.users || []);
+      setData(res.data.users || []);
+      setTotalPages(res.data.totalPages);
+      setPage(res.data.currentPage);
+      setTotalUsers(res.data.totalUsers);
     } catch (error) {
       handleError(error as CustomAxiosError);
 
@@ -48,19 +63,73 @@ const UserList = () => {
     }
   };
 
+  /*
+   * Handles the search input change.
+   *
+   * @param {string} value - The search query.
+   * @return {void}
+   */
+  const onSearchChange = (value: string) => {
+    setSearchText(value);
+    handleSearch(value, 1);
+  };
+
+  /*
+   * Debounced search handler.
+   *
+   * @param {string} value - The search query.
+   * @param {number} cur_page - The current page number for pagination.
+   * @return {Promise<void>}
+   */
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleSearch = useCallback(
-    debounce((value: string) => {
-      // eslint-disable-next-line no-console
-      console.log('Search value:', value);
-      // Add your search logic here
+    debounce(async (value: string, cur_page: number) => {
+      setLoading(true);
+      try {
+        const data = await searchUser(value, cur_page, limit); // Reset to page 1 on new search
+
+        setData(data.users);
+        setTotalPages(data.totalPages);
+        setPage(data.currentPage);
+        setTotalUsers(data.totalUsers);
+      } catch (error) {
+        // Handle error if needed
+        if (process.env.NODE_ENV === 'development') {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
+      } finally {
+        setLoading(false);
+      }
     }, 500),
     []
   );
 
-  const onSearchChange = (value: string) => {
-    setSearchText(value);
-    handleSearch(value);
+  /*
+   * Handles page change for pagination.
+   *
+   * @param {number} current - The current page number.
+   * @return {Promise<void>}
+   */
+  const handlePageChange = async (current: number) => {
+    setPage(current);
+    setLoading(true);
+    try {
+      const data = await searchUser(searchText, current, limit);
+
+      setData(data.users);
+      setTotalPages(data.totalPages);
+      setPage(data.currentPage);
+      setTotalUsers(data.totalUsers);
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -95,8 +164,16 @@ const UserList = () => {
               })}
             </div>
           ) : (
-            <ResultNotFoundUI onRetry={getUserData} />
+            <ResultNotFoundUI onRetry={() => getUserData(page, limit)} />
           )}
+        </div>
+        <div className='flex items-center justify-center pb-2 sm:pb-4'>
+          <Pagination
+            current={page}
+            total={totalUsers}
+            pageSize={limit}
+            onChange={handlePageChange}
+          />
         </div>
       </div>
     </div>

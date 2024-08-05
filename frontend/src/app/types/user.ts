@@ -6,3 +6,10 @@ export interface User {
 export interface UserProps {
   user: User;
 }
+
+export interface UserResponse {
+  users: User[];
+  totalUsers: number;
+  totalPages: number;
+  currentPage: number;
+}
