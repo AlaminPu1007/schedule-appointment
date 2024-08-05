@@ -13,6 +13,7 @@ exports.createAppointment = async (req, res) => {
             scheduler: req.user.id,
             attendee,
         });
+        console.log(appointment, "from backend");
 
         await appointment.save();
         res.json(appointment);

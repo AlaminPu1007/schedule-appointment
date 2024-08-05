@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { UserProps } from '../types/user';
+import Link from 'next/link';
 
 const UserCard: FC<UserProps> = ({ user }) => {
   return (
@@ -24,7 +25,9 @@ const UserCard: FC<UserProps> = ({ user }) => {
         </h4>
       </div>
       <div className='mx-5 flex items-center justify-between'>
-        <button className='custom-btn'>Appointment</button>
+        <Link href={`/appointment?user_id=${user?._id}`} className='custom-btn'>
+          Appointment
+        </Link>
         <button className='custom-btn'>Profile</button>
       </div>
     </div>

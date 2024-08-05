@@ -10,8 +10,13 @@ exports.getUsers = async (req, res) => {
         // Calculate the number of documents to skip
         const skip = (page - 1) * limit;
 
+        const { id = null } = req.user;
+
         // Fetch the users with pagination
-        const users = await User.find().select("-password").skip(skip).limit(limit);
+        const users = await User.find({ _id: { $ne: id } }) // Exclude current user by ID
+            .select("-password") // Exclude password field
+            .skip(skip)
+            .limit(limit);
 
         // Get total count of users
         const totalUsers = await User.countDocuments();

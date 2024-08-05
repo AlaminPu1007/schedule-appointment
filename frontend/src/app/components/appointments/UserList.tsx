@@ -14,15 +14,11 @@ import Pagination from 'rc-pagination';
 
 const UserList = () => {
   // define component local state
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userList, setUserList] = useState<User[]>([]);
   const [data, setData] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(6);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [totalPages, setTotalPages] = useState<number>(1);
   const [totalUsers, setTotalUsers] = useState<number>(0);
 
   useEffect(() => {
@@ -46,9 +42,7 @@ const UserList = () => {
       );
 
       // this will be treat as a root-data
-      setUserList(res.data.users || []);
       setData(res.data.users || []);
-      setTotalPages(res.data.totalPages);
       setPage(res.data.currentPage);
       setTotalUsers(res.data.totalUsers);
     } catch (error) {
@@ -90,7 +84,6 @@ const UserList = () => {
         const data = await searchUser(value, cur_page, limit); // Reset to page 1 on new search
 
         setData(data.users);
-        setTotalPages(data.totalPages);
         setPage(data.currentPage);
         setTotalUsers(data.totalUsers);
       } catch (error) {
@@ -119,7 +112,6 @@ const UserList = () => {
       const data = await searchUser(searchText, current, limit);
 
       setData(data.users);
-      setTotalPages(data.totalPages);
       setPage(data.currentPage);
       setTotalUsers(data.totalUsers);
     } catch (error) {
