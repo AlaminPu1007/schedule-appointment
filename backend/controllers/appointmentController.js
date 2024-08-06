@@ -22,9 +22,30 @@ exports.createAppointment = async (req, res) => {
     }
 };
 
-exports.getAppointments = async (req, res) => {
+exports.searchAppointments = async (req, res) => {
+    const { query = "", filter = "all" } = req.query;
+    const userId = req.user.id;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to midnight
+
     try {
-        const appointments = await Appointment.find().populate("scheduler", "name").populate("attendee", "name");
+        // Initialize query object with title search and user filtering
+        let queryObject = {
+            title: { $regex: query, $options: "i" },
+            $or: [{ scheduler: userId }, { attendee: userId }],
+        };
+
+        // Add date filtering based on the filter parameter
+        if (filter === "upcoming") {
+            queryObject.date = { $gte: today }; // Only upcoming appointments
+        } else if (filter === "past") {
+            queryObject.date = { $lt: today }; // Only past appointments
+        }
+
+        const appointments = await Appointment.find(queryObject)
+            .populate("scheduler", "name")
+            .populate("attendee", "name");
+
         res.json(appointments);
     } catch (err) {
         errorHandler(err, res);
@@ -48,30 +69,9 @@ exports.getAppointmentsOfCurrentUser = async (req, res) => {
     }
 };
 
-exports.searchAppointments = async (req, res) => {
-    const { query = "", filter = "all" } = req.query;
-    const userId = req.user.id; // Assuming user ID is available in req.user.id after authentication
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set time to midnight
-
+exports.getAppointments = async (req, res) => {
     try {
-        // Initialize query object with title search and user filtering
-        let queryObject = {
-            title: { $regex: query, $options: "i" },
-            $or: [{ scheduler: userId }, { attendee: userId }],
-        };
-
-        // Add date filtering based on the filter parameter
-        if (filter === "upcoming") {
-            queryObject.date = { $gte: today }; // Only upcoming appointments
-        } else if (filter === "past") {
-            queryObject.date = { $lt: today }; // Only past appointments
-        }
-
-        const appointments = await Appointment.find(queryObject)
-            .populate("scheduler", "name")
-            .populate("attendee", "name");
-
+        const appointments = await Appointment.find().populate("scheduler", "name").populate("attendee", "name");
         res.json(appointments);
     } catch (err) {
         errorHandler(err, res);
