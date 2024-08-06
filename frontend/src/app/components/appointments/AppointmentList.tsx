@@ -22,7 +22,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
   const userId = getItem('userId');
 
   return (
-    <div className='mb-1 rounded-lg border bg-white p-4 shadow-md md:min-h-[250px]'>
+    <div className='mb-1 rounded-lg border bg-white p-4 shadow-md transition-all duration-300 hover:border-theme-primary md:min-h-[250px]'>
       <h2 className='mb-1 text-xl font-bold'>{appointment.title}</h2>
       <p>{appointment.description}</p>
       <p>
@@ -45,7 +45,8 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
       </p>
       {!getAppointmentOldPost(appointment) ? (
         <div className='mt-3 flex w-full items-center justify-between'>
-          {appointment.scheduler._id === userId && (
+          {appointment.scheduler._id === userId &&
+            appointment.status === 'pending' && (
             <button
               className='custom-btn'
               onClick={() => onCancel(appointment._id)}
@@ -54,7 +55,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
             </button>
           )}
           {appointment.attendee._id === userId &&
-            appointment.status === 'pending' && (
+          appointment.status === 'pending' && (
             <button
               className='custom-btn'
               onClick={() => handleAccept(appointment._id)}
@@ -63,7 +64,11 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
             </button>
           )}
         </div>
-      ) : null}
+      ) : (
+        <div className='mt-3 text-red-500'>
+          <p>This appointment is past and cannot be modified.</p>
+        </div>
+      )}
     </div>
   );
 };

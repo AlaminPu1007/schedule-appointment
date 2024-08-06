@@ -1,7 +1,8 @@
 'use client';
 import AppointmentList from '@/app/components/appointments/AppointmentList';
 import HeaderComponent from '@/app/components/appointments/HeaderComponent';
-import Api from '@/app/lib/axiosInstance';
+import Api, { CustomAxiosError } from '@/app/lib/axiosInstance';
+import { handleError } from '@/app/lib/errorHandler';
 import { Appointment } from '@/app/types/appointments';
 import AppointmentSkeleton from '@/app/utils/AppointmentSkeleton ';
 import ResultNotFoundUI from '@/app/utils/ResultNotFoundUI';
@@ -29,6 +30,7 @@ const Page = () => {
       const { data = [] } = await Api.get('/appointments');
       setAppointments(data);
     } catch (error) {
+      handleError(error as CustomAxiosError);
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.error('Error fetching appointments:', error);
@@ -61,6 +63,7 @@ const Page = () => {
       });
       setAppointments(response.data);
     } catch (error) {
+      handleError(error as CustomAxiosError);
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.error('Error searching appointments:', error);
@@ -77,15 +80,21 @@ const Page = () => {
         prev.map((appointment) => (appointment._id === id ? data : appointment))
       );
     } catch (error) {
+      handleError(error as CustomAxiosError);
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.error('Error canceling appointment:', error);
       }
     }
   };
+
+  /**
+   * Accept a appointment.
+   * @param id this is appoint-id
+   */
   const handleAccept = async (id: string) => {
     try {
-      const { data } = await Api.put(`/appointments/cancel/${id}`);
+      const { data } = await Api.put(`/appointments//accept/${id}`);
       setAppointments((prev) =>
         prev.map((appointment) => (appointment._id === id ? data : appointment))
       );

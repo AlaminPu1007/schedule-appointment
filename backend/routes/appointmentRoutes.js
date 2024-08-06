@@ -14,5 +14,7 @@ router.put("/cancel/:id", auth, appointmentController.cancelAppointment);
 router.get("/:id", appointmentController.getAppointmentById);
 // Route to get appointment history for a specific user
 router.get("/user/:userId", appointmentController.getAppointmentsByUser);
+// Route to accept an appointment
+router.put("/accept/:id", auth, appointmentController.acceptAppointment);
 
 module.exports = router;

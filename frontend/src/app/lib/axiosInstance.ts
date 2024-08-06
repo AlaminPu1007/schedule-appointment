@@ -4,7 +4,7 @@
 
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { isTokenExpired } from './isTokenExpiration';
-import { getItem, removeItem } from './localStorage';
+import { destroyLocalStorage, getItem, removeItem } from './localStorage';
 import { deleteCookie } from 'cookies-next';
 
 interface ErrorResponse {
@@ -44,8 +44,8 @@ Api.interceptors.response.use(
 
     if (error.response && error.response.status === 401) {
       if (typeof window !== 'undefined') {
-        removeItem('token');
         deleteCookie('token');
+        destroyLocalStorage();
         window.location.href = '/auth/signin';
       }
     }

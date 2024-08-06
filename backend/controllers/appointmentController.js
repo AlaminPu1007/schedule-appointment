@@ -14,7 +14,6 @@ exports.createAppointment = async (req, res) => {
             scheduler: req.user.id,
             attendee,
         });
-        console.log(appointment, "from backend");
 
         await appointment.save();
         res.json(appointment);
@@ -49,35 +48,6 @@ exports.getAppointmentsOfCurrentUser = async (req, res) => {
     }
 };
 
-// old one
-// exports.searchAppointments = async (req, res) => {
-//     const { query = "", filter = "all" } = req.query;
-//     const today = new Date();
-//     today.setHours(0, 0, 0, 0); // Set time to midnight
-
-//     try {
-//         // Initialize query object with title search
-//         let queryObject = {
-//             title: { $regex: query, $options: "i" },
-//         };
-
-//         // Add date filtering based on the filter parameter
-//         if (filter === "upcoming") {
-//             queryObject.date = { $gte: today }; // Only upcoming appointments
-//         } else if (filter === "past") {
-//             queryObject.date = { $lt: today }; // Only past appointments
-//         }
-
-//         const appointments = await Appointment.find(queryObject)
-//             .populate("scheduler", "name")
-//             .populate("attendee", "name");
-
-//         res.json(appointments);
-//     } catch (err) {
-//         errorHandler(err, res);
-//     }
-// };
-
 exports.searchAppointments = async (req, res) => {
     const { query = "", filter = "all" } = req.query;
     const userId = req.user.id; // Assuming user ID is available in req.user.id after authentication
@@ -110,7 +80,6 @@ exports.searchAppointments = async (req, res) => {
 
 exports.cancelAppointment = async (req, res) => {
     const { id } = req.params;
-
     try {
         const appointment = await Appointment.findById(id);
 
@@ -123,6 +92,38 @@ exports.cancelAppointment = async (req, res) => {
         }
 
         appointment.status = "canceled";
+        await appointment.save();
+        res.json(appointment);
+    } catch (err) {
+        errorHandler(err, res);
+    }
+};
+
+exports.acceptAppointment = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Find the appointment by ID
+        const appointment = await Appointment.findById(id);
+
+        // Check if the appointment exists
+        if (!appointment) {
+            return res.status(404).json({ msg: "Appointment not found" });
+        }
+
+        // Check if the user is authorized to accept the appointment
+        // Only the attendee can accept the appointment
+        if (appointment.attendee.toString() !== req.user.id) {
+            return res.status(401).json({ msg: "User not authorized" });
+        }
+
+        // Check if the appointment is still pending
+        if (appointment.status !== "pending") {
+            return res.status(400).json({ msg: "Appointment cannot be accepted" });
+        }
+
+        // Update the appointment status to "accepted"
+        appointment.status = "accepted";
         await appointment.save();
         res.json(appointment);
     } catch (err) {

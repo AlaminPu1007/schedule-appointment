@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { deleteCookie } from 'cookies-next';
-import { removeItem } from '@/app/lib/localStorage';
+import { destroyLocalStorage } from '@/app/lib/localStorage';
 
 interface HeaderComponentProps {
   searchText: string;
@@ -19,8 +19,8 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
 
   // logout method of current user
   const logOut = () => {
-    removeItem('token');
     deleteCookie('token');
+    destroyLocalStorage();
     return router.push('/auth/signin');
   };
 
@@ -45,7 +45,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
   return (
     <div className='bg-white shadow-sm'>
       <div className='container mx-auto flex items-center justify-between px-4 py-4'>
-        <div className='flex w-full items-center justify-between'>
+        <div className='flex min-h-[40px] w-full items-center justify-between'>
           <div
             onClick={navigateToHome}
             className='cursor-pointer text-xl font-bold'
