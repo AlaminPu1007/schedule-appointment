@@ -50,7 +50,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
             onClick={navigateToHome}
             className='cursor-pointer text-xl font-bold'
           >
-            Home
+            HOME
           </div>
           <div className='flex items-center'>
             {pathname === '/' ? (

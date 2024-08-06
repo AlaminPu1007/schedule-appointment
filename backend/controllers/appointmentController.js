@@ -22,11 +22,45 @@ exports.createAppointment = async (req, res) => {
     }
 };
 
+// exports.searchAppointments = async (req, res) => {
+//     const { query = "", filter = "all" } = req.query;
+//     const userId = req.user.id;
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Set time to midnight
+
+//     try {
+//         // Initialize query object with title search and user filtering
+//         let queryObject = {
+//             title: { $regex: query, $options: "i" },
+//             $or: [{ scheduler: userId }, { attendee: userId }],
+//         };
+
+//         // Add date filtering based on the filter parameter
+//         if (filter === "upcoming") {
+//             queryObject.date = { $gte: today }; // Only upcoming appointments
+//         } else if (filter === "past") {
+//             queryObject.date = { $lt: today }; // Only past appointments
+//         }
+
+//         const appointments = await Appointment.find(queryObject)
+//             .populate("scheduler", "name")
+//             .populate("attendee", "name");
+
+//         res.json(appointments);
+//     } catch (err) {
+//         errorHandler(err, res);
+//     }
+// };
+
 exports.searchAppointments = async (req, res) => {
-    const { query = "", filter = "all" } = req.query;
+    const { query = "", filter = "all", page = 1, limit = 10 } = req.query;
     const userId = req.user.id;
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set time to midnight
+
+    // Ensure page and limit are numbers and not negative
+    const pageNumber = Math.max(parseInt(page), 1);
+    const limitNumber = Math.max(parseInt(limit), 1);
 
     try {
         // Initialize query object with title search and user filtering
@@ -42,28 +76,73 @@ exports.searchAppointments = async (req, res) => {
             queryObject.date = { $lt: today }; // Only past appointments
         }
 
+        // Get the total count of matching documents
+        const totalAppointments = await Appointment.countDocuments(queryObject);
+
+        // Fetch the appointments with pagination
         const appointments = await Appointment.find(queryObject)
             .populate("scheduler", "name")
-            .populate("attendee", "name");
+            .populate("attendee", "name")
+            .skip((pageNumber - 1) * limitNumber) // Skip documents for pagination
+            .limit(limitNumber); // Limit the number of documents per page
 
-        res.json(appointments);
+        res.json({
+            totalAppointments,
+            totalPages: Math.ceil(totalAppointments / limitNumber),
+            currentPage: pageNumber,
+            appointments,
+        });
     } catch (err) {
         errorHandler(err, res);
     }
 };
 
 // get appoint of logging user
-exports.getAppointmentsOfCurrentUser = async (req, res) => {
-    try {
-        const userId = req.user.id;
+// exports.getAppointmentsOfCurrentUser = async (req, res) => {
+//     try {
+//         const userId = req.user.id;
 
+//         const appointments = await Appointment.find({
+//             $or: [{ scheduler: userId }, { attendee: userId }],
+//         })
+//             .populate("scheduler", "name")
+//             .populate("attendee", "name");
+
+//         res.json(appointments);
+//     } catch (err) {
+//         errorHandler(err, res);
+//     }
+// };
+
+exports.getAppointmentsOfCurrentUser = async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+    const userId = req.user.id;
+
+    // Ensure page and limit are numbers and not negative
+    const pageNumber = Math.max(parseInt(page), 1);
+    const limitNumber = Math.max(parseInt(limit), 1);
+
+    try {
+        // Get the total count of matching documents
+        const totalAppointments = await Appointment.countDocuments({
+            $or: [{ scheduler: userId }, { attendee: userId }],
+        });
+
+        // Fetch the appointments with pagination
         const appointments = await Appointment.find({
             $or: [{ scheduler: userId }, { attendee: userId }],
         })
             .populate("scheduler", "name")
-            .populate("attendee", "name");
+            .populate("attendee", "name")
+            .skip((pageNumber - 1) * limitNumber) // Skip documents for pagination
+            .limit(limitNumber); // Limit the number of documents per page
 
-        res.json(appointments);
+        res.json({
+            totalAppointments,
+            totalPages: Math.ceil(totalAppointments / limitNumber),
+            currentPage: pageNumber,
+            appointments,
+        });
     } catch (err) {
         errorHandler(err, res);
     }

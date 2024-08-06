@@ -10,3 +10,10 @@ export interface Appointment {
   attendee: User;
   status: string;
 }
+
+export interface GetAppointMentsProps {
+  totalAppointments: number;
+  totalPages: number;
+  currentPage: number;
+  appointments: Appointment[];
+}

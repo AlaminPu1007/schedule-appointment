@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Define static path names that need to be protected
-const protectedRoutes = ['/'];
+const protectedRoutes = ['/', '/appointment', '/profile'];
 const afterAuthRoutes = ['/auth/signin', '/auth/signup'];
 
 export function middleware(request: NextRequest) {
