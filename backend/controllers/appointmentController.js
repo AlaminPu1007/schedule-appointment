@@ -1,5 +1,6 @@
 const Appointment = require("../models/Appointment");
 const { errorHandler } = require("../utils/errorHandler");
+const jwt = require("jsonwebtoken");
 
 exports.createAppointment = async (req, res) => {
     const { title, description, date, time, attendee } = req.body;
@@ -24,9 +25,27 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAppointments = async (req, res) => {
     try {
-        const appointments = await Appointment.find()
-            .populate("scheduler", "username")
-            .populate("attendee", "username");
+        const appointments = await Appointment.find().populate("scheduler", "name").populate("attendee", "name");
+        res.json(appointments);
+    } catch (err) {
+        errorHandler(err, res);
+    }
+};
+
+// get appoint of logging user
+exports.getAppointmentsOfCurrentUser = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const { id: userId } = decoded.user || {};
+
+        const appointments = await Appointment.find({
+            $or: [{ scheduler: userId }, { attendee: userId }],
+        })
+            .populate("scheduler", "name")
+            .populate("attendee", "name");
+
         res.json(appointments);
     } catch (err) {
         errorHandler(err, res);
@@ -34,8 +53,10 @@ exports.getAppointments = async (req, res) => {
 };
 
 exports.searchAppointments = async (req, res) => {
-    const { query = "", filter = "all" } = req.body;
+    const { query = "", filter = "all" } = req.query;
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to midnight
+    console.log(req.query);
 
     try {
         // Initialize query object with title search
@@ -51,8 +72,8 @@ exports.searchAppointments = async (req, res) => {
         }
 
         const appointments = await Appointment.find(queryObject)
-            .populate("scheduler", "username")
-            .populate("attendee", "username");
+            .populate("scheduler", "name")
+            .populate("attendee", "name");
 
         res.json(appointments);
     } catch (err) {

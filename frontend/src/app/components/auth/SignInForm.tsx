@@ -45,8 +45,10 @@ const SignInForm: React.FC = () => {
       setLoading(true);
 
       const res = await Api.post(`/auth/login`, data);
-      const { token = '' } = res.data;
+      const { token = '', userId = '' } = res.data;
 
+      // set user-id in local-storage
+      setItem('userId', userId);
       // set token in local-storage
       setItem('token', token);
       // set next cookies header,it help us to interact with middleware

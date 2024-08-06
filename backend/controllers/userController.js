@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const { errorHandler } = require("../utils/errorHandler");
+const jwt = require("jsonwebtoken");
 
 exports.getUsers = async (req, res) => {
     try {

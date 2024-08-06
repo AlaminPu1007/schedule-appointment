@@ -53,23 +53,25 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({
             Home
           </div>
           <div className='flex items-center'>
-            <div className='relative mx-4 flex-1'>
-              <input
-                type='text'
-                placeholder='Search'
-                className='rounded-full border p-2 px-5 text-sm outline-none duration-300 hover:border-theme-primary focus:border-theme-primary'
-                value={searchText}
-                onChange={handleTextChange}
-              />
-              {searchText && (
-                <button
-                  className='absolute right-3 top-1/2 -translate-y-1/2 transform text-[#2f2f2f] hover:text-gray-700'
-                  onClick={clearText}
-                >
-                  &#x2715; {/* Unicode character for the close (X) icon */}
-                </button>
-              )}
-            </div>
+            {pathname === '/' ? (
+              <div className='relative mx-4 flex-1'>
+                <input
+                  type='text'
+                  placeholder='Search'
+                  className='rounded-full border p-2 px-5 text-sm outline-none duration-300 hover:border-theme-primary focus:border-theme-primary'
+                  value={searchText}
+                  onChange={handleTextChange}
+                />
+                {searchText && (
+                  <button
+                    className='absolute right-3 top-1/2 -translate-y-1/2 transform text-[#2f2f2f] hover:text-gray-700'
+                    onClick={clearText}
+                  >
+                    &#x2715; {/* Unicode character for the close (X) icon */}
+                  </button>
+                )}
+              </div>
+            ) : null}
 
             {pathname === '/' ? (
               <div

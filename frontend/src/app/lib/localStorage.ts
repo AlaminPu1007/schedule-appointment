@@ -30,3 +30,12 @@ export const removeItem = (key: string): void => {
     localStorage.removeItem(key);
   }
 };
+
+/**
+ * destroy local-storage
+ */
+export const destroyLocalStorage = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.clear();
+  }
+};

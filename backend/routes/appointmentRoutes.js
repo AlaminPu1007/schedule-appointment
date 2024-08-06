@@ -4,7 +4,10 @@ const appointmentController = require("../controllers/appointmentController");
 const auth = require("../middlewares/authMiddleware");
 
 router.post("/", auth, appointmentController.createAppointment);
-router.get("/", auth, appointmentController.getAppointments);
+router.get("/all", auth, appointmentController.getAppointments);
+// get current user all appointments
+router.get("/", auth, appointmentController.getAppointmentsOfCurrentUser);
+
 router.get("/search", auth, appointmentController.searchAppointments);
 router.put("/cancel/:id", auth, appointmentController.cancelAppointment);
 // Route to get a single appointment by ID

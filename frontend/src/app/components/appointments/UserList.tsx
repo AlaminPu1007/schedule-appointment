@@ -156,7 +156,9 @@ const UserList = () => {
               })}
             </div>
           ) : (
-            <ResultNotFoundUI onRetry={() => getUserData(page, limit)} />
+            <div className='h-screen'>
+              <ResultNotFoundUI onRetry={() => getUserData(page, limit)} />
+            </div>
           )}
         </div>
         <div className='flex items-center justify-center pb-2 sm:pb-4'>
