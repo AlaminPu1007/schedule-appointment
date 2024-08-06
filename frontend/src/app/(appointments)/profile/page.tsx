@@ -1,14 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import AppointmentList from '@/app/components/appointments/AppointmentList';
 import HeaderComponent from '@/app/components/appointments/HeaderComponent';
 import Api from '@/app/lib/axiosInstance';
-import { debounce } from '@/app/lib/debounced';
-import { getItem } from '@/app/lib/localStorage';
 import { Appointment } from '@/app/types/appointments';
+import AppointmentSkeleton from '@/app/utils/AppointmentSkeleton ';
 import ResultNotFoundUI from '@/app/utils/ResultNotFoundUI';
-import UserCardSkeleton from '@/app/utils/UserCardSkeleton';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Page = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -21,7 +18,7 @@ const Page = () => {
   }, []);
 
   /**
-   *
+   * Get all appoints of current user
    * @param value
    */
 
@@ -47,6 +44,7 @@ const Page = () => {
    * @param {string} value - The search query.
    * @return {void}
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSearchChange = (value: string) => {};
 
   /*
@@ -104,36 +102,38 @@ const Page = () => {
       <div>
         <HeaderComponent searchText={''} onSearchChange={onSearchChange} />
       </div>
-      <div className='py-2 sm:py-4'>
+      <div className='py-2'>
         <div className=''>
           <div className=''>
-            <div className='container mx-auto p-4'>
-              <h1 className='mb-4 text-2xl font-bold'>
-                Appointment Management
-              </h1>
-              <div className='mb-4'>
-                <input
-                  type='text'
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className='mr-2 border p-2'
-                  placeholder='Search...'
-                />
-                <select
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className='border p-2'
-                >
-                  <option value='all'>All</option>
-                  <option value='upcoming'>Upcoming</option>
-                  <option value='past'>Past</option>
-                </select>
-                <button
-                  onClick={handleSearch}
-                  className='ml-2 bg-blue-500 p-2 text-white'
-                >
-                  Search
-                </button>
+            <div className='container mx-auto py-4'>
+              <div className='mb-4 items-center justify-between lg:flex'>
+                <h1 className='mb-4 text-2xl font-bold lg:mb-0'>
+                  APPOINTMENT MANAGEMENT
+                </h1>
+                <div className='flex items-center'>
+                  <input
+                    type='text'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='mr-2 border p-2 outline-none transition-all duration-300 hover:border-theme-primary focus:border-theme-primary'
+                    placeholder='Search...'
+                  />
+                  <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className='border p-2'
+                  >
+                    <option value='all'>All</option>
+                    <option value='upcoming'>Upcoming</option>
+                    <option value='past'>Past</option>
+                  </select>
+                  <button
+                    onClick={handleSearch}
+                    className='ml-2 rounded-sm bg-theme-primary px-5 py-[10px] text-sm text-white hover:bg-[#09286A]'
+                  >
+                    Search
+                  </button>
+                </div>
               </div>
               {!loading && appointments?.length ? (
                 <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
@@ -154,7 +154,7 @@ const Page = () => {
                   {Array.from({ length: 6 }).map((item, index) => {
                     return (
                       <div key={index}>
-                        <UserCardSkeleton />
+                        <AppointmentSkeleton />
                       </div>
                     );
                   })}

@@ -22,25 +22,44 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
   const userId = getItem('userId');
 
   return (
-    <div className='mb-4 rounded-lg border bg-white p-4 shadow-md'>
-      <h2 className='text-xl font-bold'>{appointment.title}</h2>
+    <div className='mb-1 rounded-lg border bg-white p-4 shadow-md md:min-h-[250px]'>
+      <h2 className='mb-1 text-xl font-bold'>{appointment.title}</h2>
       <p>{appointment.description}</p>
       <p>
-        Date: {new Date(appointment.date).toLocaleDateString()} Time:{' '}
-        {appointment.time}
+        <span className='font-semibold'>Date:</span>{' '}
+        {new Date(appointment.date).toLocaleDateString()}
       </p>
-      <p>Scheduler: {appointment.scheduler.name}</p>
-      <p>Attendee: {appointment.attendee.name}</p>
-      <p>Status: {appointment.status}</p>
+      <p>
+        <span className='font-semibold'>Time:</span> {appointment.time}
+      </p>
+      <p>
+        <span className='font-semibold'>Scheduler:</span>{' '}
+        {appointment.scheduler.name}
+      </p>
+      <p>
+        <span className='font-semibold'>Attendee:</span>{' '}
+        {appointment.attendee.name}
+      </p>
+      <p>
+        <span className='font-semibold'>Status:</span> {appointment.status}
+      </p>
       {!getAppointmentOldPost(appointment) ? (
-        <div>
+        <div className='mt-3 flex w-full items-center justify-between'>
           {appointment.scheduler._id === userId && (
-            <button onClick={() => onCancel(appointment._id)}>Cancel</button>
+            <button
+              className='custom-btn'
+              onClick={() => onCancel(appointment._id)}
+            >
+              Cancel
+            </button>
           )}
           {appointment.attendee._id === userId &&
             appointment.status === 'pending' && (
-            <button onClick={() => handleAccept(appointment._id)}>
-            Accept
+            <button
+              className='custom-btn'
+              onClick={() => handleAccept(appointment._id)}
+            >
+              Accept
             </button>
           )}
         </div>

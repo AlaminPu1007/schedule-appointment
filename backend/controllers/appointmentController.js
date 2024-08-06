@@ -35,10 +35,7 @@ exports.getAppointments = async (req, res) => {
 // get appoint of logging user
 exports.getAppointmentsOfCurrentUser = async (req, res) => {
     try {
-        const token = req.headers.authorization.split(" ")[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        const { id: userId } = decoded.user || {};
+        const userId = req.user.id;
 
         const appointments = await Appointment.find({
             $or: [{ scheduler: userId }, { attendee: userId }],
@@ -52,16 +49,46 @@ exports.getAppointmentsOfCurrentUser = async (req, res) => {
     }
 };
 
+// old one
+// exports.searchAppointments = async (req, res) => {
+//     const { query = "", filter = "all" } = req.query;
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Set time to midnight
+
+//     try {
+//         // Initialize query object with title search
+//         let queryObject = {
+//             title: { $regex: query, $options: "i" },
+//         };
+
+//         // Add date filtering based on the filter parameter
+//         if (filter === "upcoming") {
+//             queryObject.date = { $gte: today }; // Only upcoming appointments
+//         } else if (filter === "past") {
+//             queryObject.date = { $lt: today }; // Only past appointments
+//         }
+
+//         const appointments = await Appointment.find(queryObject)
+//             .populate("scheduler", "name")
+//             .populate("attendee", "name");
+
+//         res.json(appointments);
+//     } catch (err) {
+//         errorHandler(err, res);
+//     }
+// };
+
 exports.searchAppointments = async (req, res) => {
     const { query = "", filter = "all" } = req.query;
+    const userId = req.user.id; // Assuming user ID is available in req.user.id after authentication
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set time to midnight
-    console.log(req.query);
 
     try {
-        // Initialize query object with title search
+        // Initialize query object with title search and user filtering
         let queryObject = {
             title: { $regex: query, $options: "i" },
+            $or: [{ scheduler: userId }, { attendee: userId }],
         };
 
         // Add date filtering based on the filter parameter
