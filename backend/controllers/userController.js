@@ -2,6 +2,12 @@ const User = require("../models/User");
 const { errorHandler } = require("../utils/errorHandler");
 const jwt = require("jsonwebtoken");
 
+/**
+ * Get a paginated list of users excluding the current user.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @return {Promise<void>}
+ */
 exports.getUsers = async (req, res) => {
     try {
         // Parse page and limit from query parameters, with default values
@@ -36,6 +42,12 @@ exports.getUsers = async (req, res) => {
     }
 };
 
+/**
+ * Search for users by username or name with pagination.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @return {Promise<void>}
+ */
 exports.searchUsers = async (req, res) => {
     const { query, page = 1, limit = 10 } = req.query;
 
@@ -66,9 +78,8 @@ exports.searchUsers = async (req, res) => {
     }
 };
 
-/*
- * Get user info by user ID
- *
+/**
+ * Get user info by user ID.
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @return {Promise<void>}
@@ -87,9 +98,8 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-/*
- * Get current user info
- *
+/**
+ * Get the current user info based on the JWT token.
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @return {Promise<void>}

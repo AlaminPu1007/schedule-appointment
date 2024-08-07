@@ -1,7 +1,11 @@
 const Appointment = require("../models/Appointment");
 const { errorHandler } = require("../utils/errorHandler");
-const jwt = require("jsonwebtoken");
 
+/**
+ * Create a new appointment.
+ * @param {Object} req - The request object containing appointment details.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.createAppointment = async (req, res) => {
     const { title, description, date, time, attendee } = req.body;
 
@@ -22,36 +26,11 @@ exports.createAppointment = async (req, res) => {
     }
 };
 
-// exports.searchAppointments = async (req, res) => {
-//     const { query = "", filter = "all" } = req.query;
-//     const userId = req.user.id;
-//     const today = new Date();
-//     today.setHours(0, 0, 0, 0); // Set time to midnight
-
-//     try {
-//         // Initialize query object with title search and user filtering
-//         let queryObject = {
-//             title: { $regex: query, $options: "i" },
-//             $or: [{ scheduler: userId }, { attendee: userId }],
-//         };
-
-//         // Add date filtering based on the filter parameter
-//         if (filter === "upcoming") {
-//             queryObject.date = { $gte: today }; // Only upcoming appointments
-//         } else if (filter === "past") {
-//             queryObject.date = { $lt: today }; // Only past appointments
-//         }
-
-//         const appointments = await Appointment.find(queryObject)
-//             .populate("scheduler", "name")
-//             .populate("attendee", "name");
-
-//         res.json(appointments);
-//     } catch (err) {
-//         errorHandler(err, res);
-//     }
-// };
-
+/**
+ * Search for appointments with optional filtering, pagination, and query.
+ * @param {Object} req - The request object containing search parameters.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.searchAppointments = async (req, res) => {
     const { query = "", filter = "all", page = 1, limit = 10 } = req.query;
     const userId = req.user.id;
@@ -97,23 +76,11 @@ exports.searchAppointments = async (req, res) => {
     }
 };
 
-// get appoint of logging user
-// exports.getAppointmentsOfCurrentUser = async (req, res) => {
-//     try {
-//         const userId = req.user.id;
-
-//         const appointments = await Appointment.find({
-//             $or: [{ scheduler: userId }, { attendee: userId }],
-//         })
-//             .populate("scheduler", "name")
-//             .populate("attendee", "name");
-
-//         res.json(appointments);
-//     } catch (err) {
-//         errorHandler(err, res);
-//     }
-// };
-
+/**
+ * Get all appointments of the current user with pagination.
+ * @param {Object} req - The request object containing pagination parameters.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.getAppointmentsOfCurrentUser = async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const userId = req.user.id;
@@ -148,6 +115,11 @@ exports.getAppointmentsOfCurrentUser = async (req, res) => {
     }
 };
 
+/**
+ * Get all appointments without any filtering.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.getAppointments = async (req, res) => {
     try {
         const appointments = await Appointment.find().populate("scheduler", "name").populate("attendee", "name");
@@ -157,6 +129,11 @@ exports.getAppointments = async (req, res) => {
     }
 };
 
+/**
+ * Cancel an appointment by ID.
+ * @param {Object} req - The request object containing the appointment ID.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.cancelAppointment = async (req, res) => {
     const { id } = req.params;
     try {
@@ -178,6 +155,11 @@ exports.cancelAppointment = async (req, res) => {
     }
 };
 
+/**
+ * Accept an appointment by ID.
+ * @param {Object} req - The request object containing the appointment ID.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.acceptAppointment = async (req, res) => {
     const { id } = req.params;
 
@@ -210,6 +192,11 @@ exports.acceptAppointment = async (req, res) => {
     }
 };
 
+/**
+ * Get appointment details by ID.
+ * @param {Object} req - The request object containing the appointment ID.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.getAppointmentById = async (req, res) => {
     const { id } = req.params;
 
@@ -228,6 +215,11 @@ exports.getAppointmentById = async (req, res) => {
     }
 };
 
+/**
+ * Get all appointments for a specific user.
+ * @param {Object} req - The request object containing the user ID.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.getAppointmentsByUser = async (req, res) => {
     const { userId } = req.params;
 

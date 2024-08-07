@@ -41,22 +41,22 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
         <div className='mt-3 flex w-full items-center justify-center'>
           {appointment.scheduler._id === userId &&
             appointment.status === 'pending' && (
-              <button
-                className='custom-btn'
-                onClick={() => onCancel(appointment._id)}
-              >
-                Cancel
-              </button>
-            )}
+            <button
+              className='custom-btn'
+              onClick={() => onCancel(appointment._id)}
+            >
+              Cancel
+            </button>
+          )}
           {appointment.attendee._id === userId &&
-            appointment.status === 'pending' && (
-              <button
-                className='custom-btn'
-                onClick={() => handleAccept(appointment._id)}
-              >
-                Accept
-              </button>
-            )}
+          appointment.status === 'pending' && (
+            <button
+              className='custom-btn'
+              onClick={() => handleAccept(appointment._id)}
+            >
+              Accept
+            </button>
+          )}
         </div>
       ) : (
         <div className='mt-3 text-red-500'>

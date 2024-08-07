@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+/**
+ * Schema representing an appointment.
+ * @typedef {Object} Appointment
+ * @property {String} title - The title of the appointment.
+ * @property {String} description - The description of the appointment.
+ * @property {Date} date - The date of the appointment.
+ * @property {String} time - The time of the appointment.
+ * @property {mongoose.Schema.Types.ObjectId} scheduler - The user who scheduled the appointment.
+ * @property {mongoose.Schema.Types.ObjectId} attendee - The user who is invited to the appointment.
+ * @property {String} status - The status of the appointment (pending, accepted, declined, or canceled).
+ */
 const AppointmentSchema = new mongoose.Schema({
     title: {
         type: String,

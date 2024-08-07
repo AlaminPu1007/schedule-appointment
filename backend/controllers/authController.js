@@ -3,6 +3,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { errorHandler } = require("../utils/errorHandler");
 
+/**
+ * Register a new user.
+ * @param {Object} req - The request object containing user details.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.register = async (req, res) => {
     const { name, username, password } = req.body;
 
@@ -30,6 +35,11 @@ exports.register = async (req, res) => {
     }
 };
 
+/**
+ * Log in an existing user.
+ * @param {Object} req - The request object containing login credentials.
+ * @param {Object} res - The response object to send the result or error.
+ */
 exports.login = async (req, res) => {
     const { username, password } = req.body;
 

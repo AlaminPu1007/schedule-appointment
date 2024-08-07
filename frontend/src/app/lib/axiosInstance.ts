@@ -6,6 +6,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { isTokenExpired } from './isTokenExpiration';
 import { destroyLocalStorage, getItem, removeItem } from './localStorage';
 import { deleteCookie } from 'cookies-next';
+import { toast } from 'react-toastify';
 
 interface ErrorResponse {
   message: string;
@@ -40,13 +41,12 @@ Api.interceptors.request.use(
 Api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log(error.response.status);
-
     if (error.response && error.response.status === 401) {
       if (typeof window !== 'undefined') {
         deleteCookie('token');
         destroyLocalStorage();
         window.location.href = '/auth/signin';
+        toast.error('Authorization denied');
       }
     }
     return Promise.reject(error);

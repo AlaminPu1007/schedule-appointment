@@ -13,6 +13,7 @@ export const handleError = (error: CustomAxiosError) => {
   toast.error(errorMessage);
 
   if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line no-console
     console.log(errorMessage);
   }
 };
