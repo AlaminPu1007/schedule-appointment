@@ -99,7 +99,11 @@ const Page = () => {
     try {
       const { data } = await Api.put(`/appointments/cancel/${id}`);
       setAppointments((prev) =>
-        prev.map((appointment) => (appointment._id === id ? data : appointment))
+        prev.map((appointment) =>
+          appointment._id === id
+            ? { ...appointment, status: data.status }
+            : appointment
+        )
       );
     } catch (error) {
       handleError(error as CustomAxiosError);
@@ -118,7 +122,11 @@ const Page = () => {
     try {
       const { data } = await Api.put(`/appointments//accept/${id}`);
       setAppointments((prev) =>
-        prev.map((appointment) => (appointment._id === id ? data : appointment))
+        prev.map((appointment) =>
+          appointment._id === id
+            ? { ...appointment, status: data.status }
+            : appointment
+        )
       );
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
