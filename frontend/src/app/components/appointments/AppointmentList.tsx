@@ -28,11 +28,11 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
       </p>
       <p>
         <span className='font-semibold'>Scheduler:</span>{' '}
-        {appointment.scheduler.name || "None"}
+        {appointment.scheduler.name || 'None'}
       </p>
       <p>
         <span className='font-semibold'>Attendee:</span>{' '}
-        {appointment.attendee.name || "None"}
+        {appointment.attendee.name || 'None'}
       </p>
       <p>
         <span className='font-semibold'>Status:</span> {appointment.status}
@@ -45,16 +45,16 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
               className='custom-btn'
               onClick={() => onCancel(appointment._id)}
             >
-              Cancel
+                Cancel
             </button>
           )}
           {appointment.attendee._id === userId &&
-          appointment.status === 'pending' && (
+            appointment.status === 'pending' && (
             <button
               className='custom-btn'
               onClick={() => handleAccept(appointment._id)}
             >
-              Accept
+                Accept
             </button>
           )}
         </div>
