@@ -4,14 +4,8 @@
 
 import { getAppointmentOldPost } from '@/app/lib/getOldAppoints';
 import { getItem } from '@/app/lib/localStorage';
-import { Appointment } from '@/app/types/appointments';
+import { AppointmentListProps } from '@/app/types/globalTypes';
 import React from 'react';
-
-interface AppointmentListProps {
-  appointments: Appointment;
-  onCancel: (id: string) => void;
-  handleAccept: (id: string) => void;
-}
 
 const AppointmentList: React.FC<AppointmentListProps> = ({
   appointments: appointment,
@@ -22,7 +16,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
   const userId = getItem('userId');
 
   return (
-    <div className='mb-1 rounded-lg border bg-white p-4 shadow-md transition-all duration-300 hover:border-theme-primary md:min-h-[250px]'>
+    <div className='mb-1 rounded-lg border bg-white p-4 text-center shadow-md transition-all duration-300 hover:border-theme-primary md:min-h-[250px]'>
       <h2 className='mb-1 text-xl font-bold'>{appointment.title}</h2>
       <p>{appointment.description}</p>
       <p>
@@ -44,7 +38,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
         <span className='font-semibold'>Status:</span> {appointment.status}
       </p>
       {!getAppointmentOldPost(appointment) ? (
-        <div className='mt-3 flex w-full items-center justify-between'>
+        <div className='mt-3 flex w-full items-center justify-center'>
           {appointment.scheduler._id === userId &&
             appointment.status === 'pending' && (
               <button

@@ -1,6 +1,15 @@
 // this method will detect the old post
 import { Appointment } from '../types/appointments';
 
+/**
+ * Checks if the given appointment is in the past.
+ *
+ * @param {Appointment} appointment - The appointment object to check.
+ * @param {string} appointment.date - The date of the appointment in YYYY-MM-DD format.
+ * @param {string} appointment.time - The time of the appointment in HH:MM format.
+ * @return {boolean} - Returns true if the appointment is in the past, otherwise false.
+ */
+
 export const getAppointmentOldPost = (appointment: Appointment) => {
   const today = new Date();
 

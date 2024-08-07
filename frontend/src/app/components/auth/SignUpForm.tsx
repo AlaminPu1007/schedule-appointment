@@ -11,13 +11,7 @@ import { setItem } from '@/app/lib/localStorage';
 import { useRouter } from 'next/navigation';
 import { setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
-
-interface IFormInput {
-  name: string;
-  username: string;
-  password: string;
-  confirmPassword: string;
-}
+import { IFormInput } from '@/app/types/inputType';
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),

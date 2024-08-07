@@ -156,19 +156,21 @@ const UserList = () => {
               })}
             </div>
           ) : (
-            <div className='h-screen'>
+            <div className='mt-[200px] flex items-center justify-center lg:mt-0 lg:h-[50vh]'>
               <ResultNotFoundUI onRetry={() => getUserData(page, limit)} />
             </div>
           )}
         </div>
-        <div className='flex items-center justify-center pb-2 sm:pb-4'>
-          <Pagination
-            current={page}
-            total={totalUsers}
-            pageSize={limit}
-            onChange={handlePageChange}
-          />
-        </div>
+        {!loading && data?.length ? (
+          <div className='flex items-center justify-center pb-2 sm:pb-4'>
+            <Pagination
+              current={page}
+              total={totalUsers}
+              pageSize={limit}
+              onChange={handlePageChange}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );

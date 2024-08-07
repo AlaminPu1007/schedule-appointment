@@ -4,11 +4,7 @@ import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { deleteCookie } from 'cookies-next';
 import { destroyLocalStorage } from '@/app/lib/localStorage';
-
-interface HeaderComponentProps {
-  searchText: string;
-  onSearchChange: (value: string) => void;
-}
+import { HeaderComponentProps } from '@/app/types/globalTypes';
 
 const HeaderComponent: React.FC<HeaderComponentProps> = ({
   searchText,

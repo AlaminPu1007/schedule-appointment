@@ -1,6 +1,14 @@
 /**
- * This the animated skeleton of appointment card list
+ * A skeleton loader component for the appointment card list.
+ *
+ * This component displays a placeholder with animated pulsing effect
+ * while the actual appointment card data is loading. It provides a visual
+ * indication of content loading to enhance user experience.
+ *
+ * @component
+ * @returns {JSX.Element} - A JSX element representing the skeleton loader.
  */
+
 import React from 'react';
 
 const AppointmentSkeleton = () => {

@@ -1,3 +1,10 @@
+/**
+ * A component for the data found to visible
+ *
+ * @component
+ * @return {JSX.Element} - A JSX element is representing the no result found
+ */
+
 import React from 'react';
 
 interface NoDataProps {

@@ -11,11 +11,7 @@ import { handleError } from '@/app/lib/errorHandler';
 import { useRouter } from 'next/navigation';
 import { setCookie } from 'cookies-next';
 import { toast } from 'react-toastify';
-
-interface IFormInput {
-  username: string;
-  password: string;
-}
+import { SignIFormInput } from '@/app/types/inputType';
 
 const schema = yup.object().shape({
   username: yup.string().required('Username is required'),
@@ -34,11 +30,11 @@ const SignInForm: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>({
+  } = useForm<SignIFormInput>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<SignIFormInput> = async (data) => {
     if (loading) return;
     try {
       // start loader
