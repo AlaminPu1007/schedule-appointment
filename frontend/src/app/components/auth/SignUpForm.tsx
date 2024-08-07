@@ -85,7 +85,7 @@ const SignUpForm: React.FC = () => {
               type='text'
               id='name'
               className={`input-box ${
-                errors.username ? 'border-red-500' : 'border-gray-300'
+                errors.name ? 'border-red-500' : 'border-gray-300'
               }`}
               {...register('name')}
             />

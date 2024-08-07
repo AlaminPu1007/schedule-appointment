@@ -16,7 +16,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
   const userId = getItem('userId');
 
   return (
-    <div className='mb-1 rounded-lg border bg-white p-4 text-center shadow-md transition-all duration-300 hover:border-theme-primary md:min-h-[250px]'>
+    <div className='mb-1 rounded-lg border bg-white p-4 text-center shadow-md transition-all duration-300 hover:border-theme-primary md:min-h-[280px]'>
       <h2 className='mb-1 text-xl font-bold'>{appointment.title}</h2>
       <p>{appointment.description}</p>
       <p>
@@ -28,11 +28,11 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
       </p>
       <p>
         <span className='font-semibold'>Scheduler:</span>{' '}
-        {appointment.scheduler.name}
+        {appointment.scheduler.name || "None"}
       </p>
       <p>
         <span className='font-semibold'>Attendee:</span>{' '}
-        {appointment.attendee.name}
+        {appointment.attendee.name || "None"}
       </p>
       <p>
         <span className='font-semibold'>Status:</span> {appointment.status}

@@ -68,7 +68,7 @@ const SignInForm: React.FC = () => {
     <div className='flex min-h-screen items-center justify-center'>
       <div className='w-full max-w-md rounded-lg bg-white p-8 py-8 shadow-lg'>
         <h1 className='py-3 text-center text-3xl font-bold text-gray-800'>
-          Login
+          Sign In
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-7'>
           <div>
